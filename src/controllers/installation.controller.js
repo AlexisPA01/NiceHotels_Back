@@ -49,49 +49,9 @@ const getInstallationsByCodHotel = async (req, res) => {
     }
 }
 
-const getInstallationsByCodHotelTypeInstallation = async (req, res) => {
-    try {
-        const {CodHotel, TypeInstallation} = req.params;
-        
-        var installations = await installationService.getAsyncInstallationByCodHotelTypeInstallation(CodHotel,TypeInstallation);
-
-        if(installations.length === 0) { res.json(new response("Record not found",404,null)); }
-        else
-        {
-            res.json(new response("OK Result", 200, installations));
-        }
-        
-    } catch (error) {
-        res.status(500);
-        res.json(new response(error.message,500,null));
-    }
-}
-
-const getRoomServiceByHotelCod = async (req, res) => {
-    try {
-        const {CodHotel} = req.params;
-        var installation = await installationService.getAsyncInstallationByCodHotelTypeInstallation(CodHotel,2);
-        if(!installation) {
-            await installationService.postAsyncInstallation(
-                {
-                    CodHotel: CodHotel,
-                    IdInstallationType: 2,
-                    Name: 'servicio al cuarto'
-                }
-            );
-            res.json(new response("OK Result", 200, "Record added."));
-        }
-        res.json(new response("OK Result", 200, installation));
-        
-    } catch (error) {
-        res.status(500);
-        res.json(new response(error.message,500,null));
-    }
-}
-
 const postInstallation = async (req,res) => {
     try {
-        const { CodHotel, IdInstallationType , Name, Description, Schedule, DressCode} = req.body;
+        const { CodHotel , Name, Description, Schedule, DressCode} = req.body;
 
         if( Name === undefined || CodHotel === undefined || Schedule === undefined || DressCode === undefined)
         { res.status(400).json(new response("Bad request. Please fill all fields.",400,null)); }
@@ -104,14 +64,13 @@ const postInstallation = async (req,res) => {
                     {
                         Name,
                         CodHotel,
-                        IdInstallationType,
                         Description,
                         Schedule,
                         DressCode
                     }
                 );
                 
-                res.json(new response("OK Result",200,i));
+                res.json(new response("OK Result",200,"Record added."));
             }
             else
             { res.status(400).json(new response("Duplicate record",400,null)); }
@@ -182,8 +141,6 @@ export const methods = {
     getInstallations,
     getInstallation,
     getInstallationsByCodHotel,
-    getInstallationsByCodHotelTypeInstallation,
-    getRoomServiceByHotelCod,
     updateInstallation,
     deleteInstallation,
     postInstallation,
