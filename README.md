@@ -27,3 +27,8 @@ Este repositorio contiene el código fuente para un backend para reservas de hot
 - Mateo
 - Leo
 - Alexis
+
+## Guía de código
+
+- Guía de Estilo de JavaScript de Idiomatic.js: Es una guía de estilo que se enfoca en la legibilidad y el mantenimiento del código. Incluye recomendaciones sobre el formato del código, la organización de los archivos y la codificación segura
+- Enlace: https://github.com/rwaldron/idiomatic.js
