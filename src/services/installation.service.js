@@ -1,4 +1,3 @@
-import { getConnection } from "./../database/database";
 import { Op } from "sequelize";
 import { Installation } from "../models/Installation";
 import { City } from "../models/City";
@@ -17,21 +16,6 @@ const getAsyncInstallations = async () =>
                 "DressCode"
             ],
             include: [
-                {
-                    model: Hotel,
-                    attributes: [
-                        "Cod",
-                        "Name",
-                        "Description",
-                        "Ubication",
-                        "Address"
-                    ],
-                    include: [
-                        {
-                            model:City,
-                        }
-                    ]
-                },
                 {
                     model: InstallationMedia,
                     as: 'Medias'
@@ -70,7 +54,7 @@ const getAsyncInstallation = async (Id) =>
                 ]
             },
             {
-                model: InstallationMedia,
+                model:InstallationMedia,
                 as: 'Medias'
             }
         ] 
@@ -90,21 +74,6 @@ const getAsyncInstallationByCodHotel = async (codHotel) =>
                     "DressCode"
                 ],
                 include: [
-                    {
-                        model: Hotel,
-                        attributes: [
-                            "Cod",
-                            "Name",
-                            "Description",
-                            "Ubication",
-                            "Address"
-                        ],
-                        include: [
-                            {
-                                model:City,
-                            }
-                        ]
-                    },
                     {
                         model: InstallationMedia,
                         as: 'Medias'
@@ -161,46 +130,6 @@ const getAsyncInstallationByCodHotelName = async (codHotel, name) =>
     )
 }
 
-const getAsyncInstallationByCodHotelTypeInstallation = async (codHotel, ) => 
-{
-    return await Installation.findAll(
-        {
-            where: {
-                CodHotel: codHotel
-            },
-            attributes: [
-                "Id",
-                "Name",
-                "Description",
-                "Schedule",
-                "DressCode"
-            ],
-            include: [
-                {
-                    model: Hotel,
-                    attributes: [
-                        "Cod",
-                        "Name",
-                        "Description",
-                        "Ubication",
-                        "Address",                        
-                    ],
-                    include: [
-                        {
-                            model:City,
-                        }
-                    ]
-                },
-                {
-                    model: InstallationMedia,
-                    as: 'Medias'
-                }
-            ],
-        },
-            
-    );
-}
-
 const postAsyncInstallation = async (installation) => 
 {
     return await Installation.create(
@@ -245,7 +174,6 @@ export const methods = {
     getAsyncInstallation,
     getAsyncInstallationByCodHotel,
     getAsyncInstallationByCodHotelName,
-    getAsyncInstallationByCodHotelTypeInstallation,
     postAsyncInstallation,
     updateAsyncInstallation,
     deleteAsyncInstallation

@@ -1,4 +1,3 @@
-import { getConnection } from "./../database/database";
 import { Hotel } from "../models/Hotel";
 import { City } from "../models/City";
 import { HotelMedia } from "../models/HotelMedia";
@@ -9,11 +8,6 @@ const getAsyncHotels = async () => {
       include: [
          {
             model: City,
-            include: [
-               {
-                  model: Country,
-               },
-            ],
          },
          {
             model: HotelMedia,
@@ -28,12 +22,7 @@ const getAsyncHotel = async (Cod) => {
       attributes: ["Cod", "Name", "Description", "Ubication", "Address"],
       include: [
          {
-            model: City,
-            include: [
-               {
-                  model: Country,
-               },
-            ],
+            model: City
          },
          {
             model: HotelMedia,
@@ -41,11 +30,6 @@ const getAsyncHotel = async (Cod) => {
          }
       ],
    });
-};
-
-const getAsyncHotelByName = async (name) => {
-   var hotel = await Hotel.findOne({ where: { Name: name } });
-   return hotel;
 };
 
 const postAsyncHotel = async (hotel) => {
@@ -82,7 +66,6 @@ const deleteAsyncHotel = async (cod) => {
 export const methods = {
    getAsyncHotels,
    getAsyncHotel,
-   getAsyncHotelByName,
    postAsyncHotel,
    updateAsyncHotel,
    deleteAsyncHotel,

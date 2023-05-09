@@ -39,14 +39,6 @@ const postRoom = async (req, res) => {
          RoomEquipments,
       } = req.body;
 
-      //   if (
-      //      Name === undefined ||
-      //      Description === undefined ||
-      //      CodHotel === undefined ||
-      //      CostNight === undefined ||
-      //      RoomNumbers == undefined ||
-      //      RoomEquipments === undefined
-      //   ) {
       if (
          Name === undefined ||
          Description === undefined ||

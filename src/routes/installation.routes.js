@@ -9,14 +9,6 @@ router.get(
    "/by+-+cod+-+hotel/:CodHotel",
    installationController.getInstallationsByCodHotel
 );
-router.get(
-   "/room+-+service/:CodHotel",
-   installationController.getRoomServiceByHotelCod
-);
-router.get(
-   "/:CodHotel/:TypeInstallation",
-   installationController.getInstallationsByCodHotelTypeInstallation
-);
 router.post("/", installationController.postInstallation);
 router.put("/:Id", installationController.updateInstallation);
 router.delete("/:Id", installationController.deleteInstallation);

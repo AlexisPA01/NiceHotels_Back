@@ -1,5 +1,4 @@
 import { City } from "../models/City";
-import { getConnection } from "./../database/database";
 
 const getAsyncCities = async () => 
 {

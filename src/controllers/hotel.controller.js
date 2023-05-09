@@ -38,19 +38,14 @@ const postAsyncHotel = async (req, res) => {
             new response("Bad request. Please fill all fields.", 400, null)
          );
       } else {
-         var h = await hotelService.getAsyncHotelByName(Name);
-         if (!h) {
-            await hotelService.postAsyncHotel({
-               Name,
-               Description,
-               IdCity,
-               Ubication,
-               Address,
-            });
-            res.json(new response("OK Result", 200, "Record added."));
-         } else {
-            res.status(400).json(new response("Duplicate record", 400, null));
-         }
+         await hotelService.postAsyncHotel({
+            Name,
+            Description,
+            IdCity,
+            Ubication,
+            Address,
+         });
+         res.json(new response("OK Result", 200, "Record added."));
       }
    } catch (error) {
       res.status(500);

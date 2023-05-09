@@ -23,5 +23,8 @@ export const InstallationMedia = sequelize.define('InstallationMedia', {
     },
     FileType: {
         type: DataTypes.STRING(250)
+    },
+    TypeMedia: {
+        type: DataTypes.STRING(250)
     }
 });
