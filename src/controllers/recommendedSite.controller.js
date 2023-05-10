@@ -89,11 +89,7 @@ const updateRecommendedSite = async (req,res) => {
         else
         {
                 var recommendedSite = await recommendedSiteService.getAsyncRecommendedSite(Id);
-                if(!recommendedSite) {
-                    res.json(new response("Record not found",404,null));
-                }
-                if(recommendedSite && recommendedSite.Name !== Name)
-                {
+                if(recommendedSite) {
                     await recommendedSiteService.updateAsyncRecommendedSite(
                         {
                             Id,
@@ -104,17 +100,16 @@ const updateRecommendedSite = async (req,res) => {
                         }
                     );
                     res.json(new response("OK Result",200,"Record updated."));
-
-                }else
-                if(recommendedSite.Name === Name) { 
-                    res.status(404).json(new response("Duplicate record",400,null));
+                }
+                else { 
+                    res.status(404).json(new response("Duplicate record",404,null));
                 }
 
         }
     }catch(error)
     {
-        res.status(500);
-        res.json(new response(error.message,500,null));
+        //res.status(404);
+        res.json(new response(error.message,404,null));
     }
 }
 
