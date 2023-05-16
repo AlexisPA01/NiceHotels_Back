@@ -1,11 +1,7 @@
 import { Guest } from '../models/Guest';
-import { Hotel } from '../models/Hotel';
-import { Room } from '../models/Room';
-import { RoomNumber } from '../models/RoomNumber';
-import { RoomReservated } from '../models/RoomReservated';
+import { DocumentType } from '../models/DocumentType';
 
 const getAsyncGuestByDoc = async (doc) => {
-    console.log(doc);
     return await Guest.findOne(
         {
             where: {Document: doc},
@@ -14,7 +10,8 @@ const getAsyncGuestByDoc = async (doc) => {
                 "Name",
                 "LastName",
                 "Document",
-                "DocumentType",
+                "IdDocumentType",
+                "Gender",
                 "DateBirth",
                 "Gender",
                 "PhoneNumber",
@@ -22,33 +19,7 @@ const getAsyncGuestByDoc = async (doc) => {
             ],
             include: [
                 {
-                    model: RoomReservated,
-                    attributes: [
-                        "Id",
-                        "NumberAdults",
-                        "NumberKids",
-                        "NumberBabys"
-                    ],
-                    include: {
-                        model: RoomNumber,
-                        attributes: [
-                            "Id",
-                            "Num",
-                            "IsAvailable"
-                        ],
-                        include: {
-                            model: Room,
-                            attributes: [
-                                "Cod",
-                                "Name",
-                                "Description",
-                                "CostNight"
-                            ],
-                            include: {
-                                model: Hotel
-                            }
-                        }
-                    }
+                    model: DocumentType
                 }
             ]
         }

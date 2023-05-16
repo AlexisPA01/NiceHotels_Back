@@ -1,4 +1,3 @@
-import { getConnection } from "./../database/database";
 import { Room } from "../models/Room";
 import { Hotel } from "../models/Hotel";
 import { City } from "../models/City";
@@ -90,12 +89,17 @@ const postAsyncRoom = async (room) => {
 };
 
 const updateAsyncRoom = async (room) => {
-   return await Room.update({
-      CodHotel: room.CodHotel,
-      Name: room.Name,
-      Description: room.Description,
-      CostNight: room.CostNight,
-   });
+   return await Room.update(
+      {
+         CodHotel: room.CodHotel,
+         Name: room.Name,
+         Description: room.Description,
+         CostNight: room.CostNight,
+      },
+      {
+         where: {Cod: room.Cod}
+      }
+   );
 };
 
 const UpdateAsyncRoomByCodHotelData = async (
@@ -118,12 +122,6 @@ const UpdateAsyncRoomByCodHotelData = async (
 };
 
 const deleteAsyncRoom = async (Cod) => {
-   await RoomEquipment.destroy({
-      where: { CodRoom: Cod },
-   });
-   await RoomNumber.destroy({
-      where: { CodRoom: Cod },
-   });
    return await Room.destroy({
       where: { Cod: Cod },
    });

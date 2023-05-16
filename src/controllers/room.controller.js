@@ -1,5 +1,6 @@
 import { methods as roomService } from "./../services/room.service";
 import { methods as roomNumberService } from "./../services/roomNumber.service";
+import { methods as roomMediaService } from "./../services/roomMedia.service";
 import response from "../entities/response";
 
 const getRoomsForHotel = async (req, res) => {
@@ -35,36 +36,32 @@ const postRoom = async (req, res) => {
          Description,
          CodHotel,
          CostNight,
-         RoomNumbers,
-         RoomEquipments,
       } = req.body;
 
-      if (
-         Name === undefined ||
-         Description === undefined ||
-         CodHotel === undefined ||
-         CostNight === undefined ||
-         RoomEquipments === undefined
-      ) {
-         res.status(400).json({
-            message: "Bad request. Please fill all fields.",
-         });
-      } else {
-         var room = await roomService.getAsyncRoomByCodHotelName(
-            CodHotel,
-            Name
-         );
-         if (room) {
-            res.status(400).json(new response("Duplicate record", 400, null));
+      if ( Name === undefined || Description === undefined || CodHotel === undefined || CostNight === undefined)
+      { res.status(400).json({message: "Bad request. Please fill all fields.",}); } 
+      else {
+         let room = await roomService.getAsyncRoomByCodHotelName(CodHotel,Name);
+         if (!room) {
+            let roomCreated = await roomService.postAsyncRoom(
+               {
+                  Name,
+                  CodHotel,
+                  Description,
+                  CostNight,
+               }
+            );
+
+            await roomMediaService.postAsyncRoomMedia({
+               CodRoom: roomCreated.Cod,
+               Name:"placeholder room media",
+               FileType:"png",
+               URL:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/habitacion-alquilar-1563544275.jpg"
+            })
+
+            res.json(new response("OK Result",200,"Record added."));
          } else {
-            var roomCreated = await roomService.postAsyncRoom({
-               Name,
-               Description,
-               CodHotel,
-               CostNight,
-            });
-            console.log("aqui esta el objjeto room Creado", roomCreated);
-            res.json(new response("OK Result", 200));
+            res.status(400).json(new response("Duplicate record", 400, null));
          }
       }
    } catch (error) {
@@ -79,35 +76,25 @@ const updateRoom = async (req, res) => {
       Name,
       Description,
       CodHotel,
-      CostNight,
-      RoomNumbers,
-      RoomEquipments,
+      CostNight
    } = req.body;
    try {
-      if (
-         Name === undefined ||
-         CodHotel === undefined ||
-         Description === undefined ||
-         CostNight === undefined
-      ) {
-         res.status(400).json({
-            message: "Bad request. Please fill all fields.",
-         });
-      } else {
+      if ( Name === undefined || CodHotel === undefined || Description === undefined || CostNight === undefined) 
+      { res.status(400).json({ message: "Bad request. Please fill all fields.", });} 
+      else {
          let room = await roomService.getAsyncRoom(Cod);
          if (room) {
             //---No ingresa float a la base de datos
-            await roomService.UpdateAsyncRoomByCodHotelData(
+            await roomService.updateAsyncRoom({ 
                Cod,
                Name,
                Description,
-               CostNight
-            );
+               CostNight,
+               CodHotel
+            });
             res.json(new response("OK Result", 200, "Record updated"));
-         } else {
-            console.log("error");
-            res.status(400).json(new response("Duplicate record", 400, null));
-         }
+         } 
+         else { res.status(404).json(new response("Record not found",404,null));}
       }
    } catch (error) {
       res.status(500);

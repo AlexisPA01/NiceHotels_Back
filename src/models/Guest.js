@@ -1,9 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/database";
-import { RoomReservated } from "./RoomReservated";
 import { DocumentType } from "./DocumentType";
-import { RoomNumber } from "./RoomNumber";
-import { Hotel } from "./Hotel";
 import { City } from "./City";
 
 export const Guest = sequelize.define("Guest", {
@@ -23,6 +20,10 @@ export const Guest = sequelize.define("Guest", {
    },
    IdDocumentType: {
       type: DataTypes.INTEGER,
+      references:{
+         model:'DocumentType',
+         key:'Id'
+      }
    },
    DateBirth: {
       type: DataTypes.DATE,

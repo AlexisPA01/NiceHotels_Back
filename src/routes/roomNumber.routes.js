@@ -5,9 +5,9 @@ const router = Router();
 
 router.get("/:Num", roomNumberController.getAsyncRoomNumber);
 router.get("/", roomNumberController.getAsyncRoomNumbers);
+router.get("/by-room/:Cod", roomNumberController.getAsyncRoomsNumberByRoom);
 router.post("/", roomNumberController.postAsyncRoomNumber);
 router.put("/:Num", roomNumberController.updateAsyncRoomNumber);
 router.delete("/:Num", roomNumberController.deleteAsyncRoomNumber);
-router.get("/by-room/:Cod", roomNumberController.getAsyncRoomsNumberByRoom);
 
 export default router;

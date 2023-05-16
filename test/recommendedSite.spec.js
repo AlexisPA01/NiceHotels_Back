@@ -64,6 +64,19 @@ describe('getAsyncRecommendedSites', () => {
             )
         );
     });
+
+    it('returns a 500 error if there is a error', async () => {
+
+        const mockCityFindAll = jest.spyOn(RecommendedSite, 'findAll').mockImplementation(() => {
+            throw new Error('Intentional error');
+        });
+
+        const response = await request(app).get('/api/recommended-site');
+
+        expect(response.status).toBe(500);
+
+        mockCityFindAll.mockRestore();
+    });
 });
 
 describe("getAsyncRecommendedSite", () => {
@@ -121,6 +134,30 @@ describe("getAsyncRecommendedSite", () => {
                 }
             }
         );
+    });
+
+    it('returns a 404 if the hotel does not exist', async () => {
+
+        const response = await request(app).get('/api/recommended-site/2');
+
+        expect(response.body).toEqual({
+            data: null,
+            message: "Record not found",
+            status: 404
+        })
+    });
+
+    it('returns a 500 error if there is a error', async () => {
+
+        const mockCityFindAll = jest.spyOn(RecommendedSite, 'findByPk').mockImplementation(() => {
+            throw new Error('Intentional error');
+        });
+
+        const response = await request(app).get('/api/recommended-site/1');
+
+        expect(response.status).toBe(500);
+
+        mockCityFindAll.mockRestore();
     });
 });
 
@@ -192,6 +229,30 @@ describe("getAsyncRecommendedSiteByCodHotel", () => {
             )
         );
     });
+
+    it('returns a 404 if the hotel does not exist', async () => {
+
+        const response = await request(app).get('/api/recommended-site/by-cod-hotel/2');
+
+        expect(response.body).toEqual({
+            data: null,
+            message: "Record not found",
+            status: 404
+        })
+    });
+
+    it('returns a 500 error if there is a error', async () => {
+
+        const mockCityFindAll = jest.spyOn(RecommendedSite, 'findAll').mockImplementation(() => {
+            throw new Error('Intentional error');
+        });
+
+        const response = await request(app).get('/api/recommended-site/by-cod-hotel');
+
+        expect(response.status).toBe(500);
+
+        mockCityFindAll.mockRestore();
+    });
 });
 
 describe('updateAsyncRecommendedSite', () => {
@@ -252,6 +313,45 @@ describe('updateAsyncRecommendedSite', () => {
 
         expect(response.status).toBe(404);
     });
+
+    it('returns a 400 error if there is missing fields', async () => {
+
+        const mockRecommendedSite = {
+            Name: 'Test recommendedSite jest after',
+            Description: 'Test recommendedSite description after',
+            Address: 'address recommendedSite',
+            Ubication: 'ubication recommendedSite'
+        };
+
+        const response = await request(app)
+            .put('/api/recommended-site/3')
+            .send(mockRecommendedSite);
+
+        expect(response.status).toBe(400);
+    });
+
+    it('returns a 500 error if there is a error', async () => {
+        const mock = {
+            Id: 999,
+            CodHotel: 1,
+            Name: 'Test recommendedSite jest asasas',
+            Description: 'Test description jest recommendedSite asasas',
+            Address: 'address recommendedSite jest asasa',
+            Ubication: 'ubication recommendedSite asasas'
+        };
+        
+        const mockCityFindAll = jest.spyOn(RecommendedSite, 'update').mockImplementation(() => {
+            throw new Error('Intentional error');
+        });
+
+        const response = await request(app)
+            .put('/api/recommended-site/3')
+            .send(mock);
+
+        expect(response.status).toBe(500);
+
+        mockCityFindAll.mockRestore();
+    });
 });
 
 describe('postAsynRecommendedsite', () => {
@@ -272,6 +372,45 @@ describe('postAsynRecommendedsite', () => {
         expect(result.body.data).toBe("Record added.");
         expect(result.body.message).toBe("OK Result");
         expect(result.body.status).toBe(200);
+    });
+
+    it('returns a 400 error if there is missing fields', async () => {
+
+        const mockRecommendedSite = {
+            Name: 'Test recommendedSite jest after',
+            Description: 'Test recommendedSite description after',
+            Address: 'address recommendedSite',
+            Ubication: 'ubication recommendedSite'
+        };
+
+        const response = await request(app)
+            .post('/api/recommended-site')
+            .send(mockRecommendedSite);
+
+        expect(response.status).toBe(400);
+    });
+
+    it('returns a 500 error if there is a error', async () => {
+        const mock = {
+            Id: 999,
+            CodHotel: 1,
+            Name: 'Test recommendedSite jest asasas',
+            Description: 'Test description jest recommendedSite asasas',
+            Address: 'address recommendedSite jest asasa',
+            Ubication: 'ubication recommendedSite asasas'
+        };
+        
+        const mockCityFindAll = jest.spyOn(RecommendedSite, 'create').mockImplementation(() => {
+            throw new Error('Intentional error');
+        });
+
+        const response = await request(app)
+            .post('/api/recommended-site')
+            .send(mock);
+
+        expect(response.status).toBe(500);
+
+        mockCityFindAll.mockRestore();
     });
 });
 
@@ -305,4 +444,27 @@ describe('deleteAsyncRecommendedsite', () => {
             where: { Id: recommendedSiteDelete.Id },
         });
     });
+
+    it('returns a 404 error if the recommendedSite does not exist', async () => {
+        const response = await request(app).delete(`/api/recommended-site/4`)
+    
+        expect(response.body).toEqual({
+          data: "Record not found",
+          message: "Error",
+          status: 404
+        })
+      });
+
+    it('returns a 500 error if there is a error', async () => {
+        const mock = jest.spyOn(RecommendedSite, 'destroy').mockImplementation(() => {
+          throw new Error('Intentional error');
+        });
+    
+        const response = await request(app)
+        .delete('/api/recommended-site/3')
+    
+        expect(response.status).toBe(500);
+    
+        mock.mockRestore();
+      });
 });

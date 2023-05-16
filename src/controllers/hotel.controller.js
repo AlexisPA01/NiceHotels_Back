@@ -1,5 +1,6 @@
 import response from "./../entities/response";
 import { methods as hotelService } from "./../services/hotel.service";
+import { methods as hotelMediaService  } from "./../services/hotelMedia.service";
 
 const getAsyncHotels = async (req, res) => {
    try {
@@ -38,13 +39,20 @@ const postAsyncHotel = async (req, res) => {
             new response("Bad request. Please fill all fields.", 400, null)
          );
       } else {
-         await hotelService.postAsyncHotel({
+         let hotel = await hotelService.postAsyncHotel({
             Name,
             Description,
             IdCity,
             Ubication,
             Address,
          });
+
+         await hotelMediaService.postAsyncHotelMedia({
+            CodHotel:hotel.Cod,
+            Name:"placeholder hotel media",
+            FileType:"png",
+            URL:"https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg",
+         })
          res.json(new response("OK Result", 200, "Record added."));
       }
    } catch (error) {
