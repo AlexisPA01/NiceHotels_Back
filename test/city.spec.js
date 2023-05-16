@@ -4,14 +4,14 @@ import { City } from '../src/models/City';
 
 describe('getAsyncCities', () => {
   it('should return all cities with their ids and names', async () => {
-    
+
     const cities = await City.findAll(
-        {
-            attributes: [
-                "Id",
-                "Name"
-            ],
-        }
+      {
+        attributes: [
+          "Id",
+          "Name"
+        ],
+      }
     );
 
     // Realizar la petición GET al endpoint de ciudades
@@ -29,5 +29,19 @@ describe('getAsyncCities', () => {
         }))
       )
     );
+  });
+
+  it('returns a 500 error if there is a error', async () => {
+
+    const mockCityFindAll = jest.spyOn(City, 'findAll').mockImplementation(() => {
+      throw new Error('Intentional error');
+    });
+
+    const response = await request(app).get('/api/city  ');
+
+    expect(response.status).toBe(500);
+
+    mockCityFindAll.mockRestore();
+
   });
 });

@@ -1,4 +1,6 @@
 import { methods as installationService } from "./../services/installation.service";
+import { methods as installationServiceMedia } from "./../services/installationMedia.service";
+
 import response from "./../entities/response";
 
 const getInstallations = async (req, res) => {
@@ -57,10 +59,10 @@ const postInstallation = async (req,res) => {
         { res.status(400).json(new response("Bad request. Please fill all fields.",400,null)); }
         else
         {
-            var installation = await installationService.getAsyncInstallationByCodHotelName(CodHotel,Name);
+            let installation = await installationService.getAsyncInstallationByCodHotelName(CodHotel,Name);
             if(!installation)
             {
-                var i = await installationService.postAsyncInstallation(
+                let i = await installationService.postAsyncInstallation(
                     {
                         Name,
                         CodHotel,
@@ -69,11 +71,18 @@ const postInstallation = async (req,res) => {
                         DressCode
                     }
                 );
+
+                await installationServiceMedia.postAsyncInstallationMedia({
+                    IdInstallation:i.Id,
+                    Name:"placeholder installation media",
+                    URL:"https://www.eltiempo.com/files/image_640_428/uploads/2022/11/11/636ec9b036dfd.png",
+                    FileType:"png",
+                })
                 
                 res.json(new response("OK Result",200,"Record added."));
             }
             else
-            { res.status(400).json(new response("Duplicate record",400,null)); }
+            { res.status(401).json(new response("Duplicate record",401,null)); }
         }
     }catch(error)
     {
@@ -108,7 +117,6 @@ const updateInstallation = async (req,res) => {
 
                 }
                 else { res.status(404).json(new response("Record not found",404,null));}
-
         }
     }catch(error)
     {

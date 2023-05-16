@@ -7,17 +7,13 @@ import moment from "moment/moment";
 const getGuest = async (req, res) => {
     const doc = req.params.Document;
 
-    if(doc == undefined) {
-        res.status(400).json(new response ("Bad request. Please fill all fields.", 400, null));
+    const guest = await guestServices.getAsyncGuestByDoc(doc);
+
+    if(!guest) {
+        res.json(new response("Guest not found", 404, null));  
     }
     else {
-        const guest = await guestServices.getAsyncGuestByDoc(doc);
-        if(!guest) {
-            res.json(new response("Guest not found", 404, null));  
-        }
-        else {
-            res.json(new response("OK", 200, guest));
-        }
+        res.json(new response("OK", 200, guest));
     }
 }
 

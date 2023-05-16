@@ -1,4 +1,5 @@
 import { methods as recommendedSiteService } from "./../services/recommendedSite.service";
+import { methods as recommendedSiteMediaService } from "./../services/recommendedSiteMedia.service";
 import response from "./../entities/response";
 
 const getRecommendedSites = async (req, res) => {
@@ -58,7 +59,7 @@ const postRecommendedSite = async (req,res) => {
             var recommendedSite = await recommendedSiteService.getAsyncRecommendedSiteByCodHotelName(CodHotel,Name);
             if(!recommendedSite)
             {
-                await recommendedSiteService.postAsyncRecommendedSite(
+                let site = await recommendedSiteService.postAsyncRecommendedSite(
                     {
                         CodHotel,
                         Name,
@@ -68,7 +69,14 @@ const postRecommendedSite = async (req,res) => {
                         Ubication
                     }
                 );
-                res.json(new response("OK Result",200,"Record added."));
+
+                await recommendedSiteMediaService.postAsyncRecommendedSiteMedia({
+                    IdRecommendedSite: site.Id,
+                    Name:"placeholder recommended site media",
+                    FileType:"png",
+                    URL:"https://www.infobae.com/new-resizer/dbcnD_OL_e2ND2vT9T_GyAa7IpA=/1200x900/filters:format(webp):quality(85)//arc-anglerfish-arc2-prod-infobae.s3.amazonaws.com/public/L2W3PEXXGVAAPFDVDWCHAC73EM.jpg"
+                 })
+                res.json(new response("OK Result", 200, "Record added."));
             }else{ res.status(400).json(new response("Duplicate record",400,null)); }
         }
     }catch(error)
@@ -108,8 +116,8 @@ const updateRecommendedSite = async (req,res) => {
         }
     }catch(error)
     {
-        //res.status(404);
-        res.json(new response(error.message,404,null));
+        res.status(500);
+        res.json(new response(error.message,500,null));
     }
 }
 
@@ -119,11 +127,10 @@ const deleteRecommendedSite = async (req,res) => {
         const {Id} = req.params;
         const recommendedSite = await recommendedSiteService.getAsyncRecommendedSite(Id);
         if(!recommendedSite) {
-            res.json(new response("ERROR", 404, "Record not found"));
+            res.json(new response("Error", 404, "Record not found"));
         }
         else {
             await recommendedSiteService.deleteAsyncRecommendedSite(Id);
-            //--- Falta borrado en cascada
             res.json(new response("OK Result", 200, "Delete record"));    
         }
     }catch(error)

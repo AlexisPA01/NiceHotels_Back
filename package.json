@@ -7,7 +7,9 @@
     "babel-node": "babel-node --presets=@babel/preset-env",
     "build": "babel src --out-dir dist",
     "dev": "nodemon --exec npm run babel-node src/index.js",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "jest",
+    "cover": "jest --coverage"
   },
   "keywords": [
     "express.js"

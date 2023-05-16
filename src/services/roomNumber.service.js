@@ -2,13 +2,11 @@ import { City } from "../models/City";
 import { Hotel } from "../models/Hotel";
 import { Room } from "../models/Room";
 import { RoomNumber } from "../models/RoomNumber";
-import { getConnection } from "./../database/database";
 
-const getAsyncRoomNumber = async (num) => 
-{
+const getAsyncRoomNumber = async (num) => {
     return await RoomNumber.findOne(
         {
-            where: {Num: num},
+            where: { Num: num },
             attributes: [
                 "Id",
                 "Num",
@@ -16,36 +14,35 @@ const getAsyncRoomNumber = async (num) =>
             ],
             include: {
                 model: Room,
-                    attributes: [
-                        "Cod",
-                        "Name",
-                        "Description",
-                        "CostNight"
-                    ],
-                    include: [
-                        {
-                            model: Hotel,
-                            attributes: [
-                                "Cod",
-                                "Name",
-                                "Description",
-                                "Ubication",
-                                "Address"
-                            ],
-                            include: [
-                                {
-                                    model:City,
-                                }
-                            ]
-                        }
-                    ],
+                attributes: [
+                    "Cod",
+                    "Name",
+                    "Description",
+                    "CostNight"
+                ],
+                include: [
+                    {
+                        model: Hotel,
+                        attributes: [
+                            "Cod",
+                            "Name",
+                            "Description",
+                            "Ubication",
+                            "Address"
+                        ],
+                        include: [
+                            {
+                                model: City,
+                            }
+                        ]
+                    }
+                ],
             }
         }
     );
 }
 
-const getAsyncRoomNumbers = async () => 
-{
+const getAsyncRoomNumbers = async () => {
     return await RoomNumber.findAll(
         {
             attributes: [
@@ -55,39 +52,21 @@ const getAsyncRoomNumbers = async () =>
             ],
             include: {
                 model: Room,
-                    attributes: [
-                        "Cod",
-                        "Name",
-                        "Description",
-                        "CostNight"
-                    ],
-                    include: [
-                        {
-                            model: Hotel,
-                            attributes: [
-                                "Cod",
-                                "Name",
-                                "Description",
-                                "Ubication",
-                                "Address"
-                            ],
-                            include: [
-                                {
-                                    model:City,
-                                }
-                            ]
-                        }
-                    ],
+                attributes: [
+                    "Cod",
+                    "Name",
+                    "Description",
+                    "CostNight"
+                ]
             }
         }
     );
 }
 
-const getAsyncRoomsNumberByRoom = async (codRoom) => 
-{
+const getAsyncRoomsNumberByRoom = async (codRoom) => {
     return await RoomNumber.findAll(
         {
-            where: {CodRoom: codRoom},
+            where: { CodRoom: codRoom },
             attributes: [
                 "Id",
                 "Num",
@@ -95,36 +74,35 @@ const getAsyncRoomsNumberByRoom = async (codRoom) =>
             ],
             include: {
                 model: Room,
-                    attributes: [
-                        "Cod",
-                        "Name",
-                        "Description",
-                        "CostNight"
-                    ],
-                    include: [
-                        {
-                            model: Hotel,
-                            attributes: [
-                                "Cod",
-                                "Name",
-                                "Description",
-                                "Ubication",
-                                "Address"
-                            ],
-                            include: [
-                                {
-                                    model:City,
-                                }
-                            ]
-                        }
-                    ],
+                attributes: [
+                    "Cod",
+                    "Name",
+                    "Description",
+                    "CostNight"
+                ],
+                include: [
+                    {
+                        model: Hotel,
+                        attributes: [
+                            "Cod",
+                            "Name",
+                            "Description",
+                            "Ubication",
+                            "Address"
+                        ],
+                        include: [
+                            {
+                                model: City,
+                            }
+                        ]
+                    }
+                ],
             }
         }
     );
 }
 
-const postAsyncRoomNumber = async (roomNumber) => 
-{
+const postAsyncRoomNumber = async (roomNumber) => {
     return await RoomNumber.create({
         Num: roomNumber.Num,
         CodRoom: roomNumber.CodRoom,
@@ -132,38 +110,35 @@ const postAsyncRoomNumber = async (roomNumber) =>
     });
 }
 
-const updateAsyncRoomNumber = async (roomNumber) =>
-{
+const updateAsyncRoomNumber = async (roomNumber) => {
     return await RoomNumber.update({
         CodRoom: roomNumber.CodRoom,
         IsAvailable: roomNumber.IsAvailable,
     }
-    ,
-    {
-        where: { Num: roomNumber.Num }
-    }
+        ,
+        {
+            where: { Num: roomNumber.Num }
+        }
     )
 }
 
-const deleteAsyncRoomNumber = async (num) => 
-{
+const deleteAsyncRoomNumber = async (num) => {
     return await RoomNumber.destroy(
         {
-            where: { Num: num}
+            where: { Num: num }
         }
     );
 }
 
-const deleteAsyncRoomNumberByCodRoom = async (Cod) => 
-{
+const deleteAsyncRoomNumberByCodRoom = async (Cod) => {
     return await RoomNumber.destroy(
         {
-            where: { CodRoom: Cod}
+            where: { CodRoom: Cod }
         }
     );
 }
 
-export const methods = 
+export const methods =
 {
     getAsyncRoomNumber,
     getAsyncRoomNumbers,

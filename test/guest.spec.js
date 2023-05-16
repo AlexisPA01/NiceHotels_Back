@@ -1,56 +1,61 @@
 import request from 'supertest';
 import app from '../src/app';
-import { GuestRoomReservated } from "../src/models/GuestRoomReservated";
-import { RoomReservated } from "../src/models/RoomReservated";
-import { RoomNumber } from "../src/models/RoomNumber";
 import { DocumentType } from "../src/models/DocumentType";
-import { City } from "../src/models/City";
 import { Guest } from '../src/models/Guest';
-import express from 'express';
 
-describe('getGuest', () =>{
-    it('should return all guest with their attributes', async () => {
-        const guests = await Guest.findAll({
-         attributes: ["Cod", "Name", "LastName", "Document", "Gender", "PhoneNumber", "Email", "Address"],
-         inclued: [
-             {
-                 model: City,
-             },
-             {
-                 model: DocumentType
-             }
-         ],  
-        });
+describe('getGuest', () => {
+    it('should return an Guest with the specified Doc', async () => {
+        const guest = await Guest.findOne(
+            {
+                where: { Document: 1007008009 },
+                attributes: [
+                    "Id",
+                    "Name",
+                    "LastName",
+                    "Document",
+                    "IdDocumentType",
+                    "DateBirth",
+                    "Gender",
+                    "PhoneNumber",
+                    "Email"
+                ],
+                include: [
+                    {
+                        model: DocumentType
+                    }
+                ]
+            }
+        )
 
         // Realizar la petición GET al endpoint de invitado
-        const res = await request(app).get('api/guest');
-    
+        const res = await request(app).get('/api/guest/by-doc/1007008009');
+
         // Verificar que la respuesta tenga un status 200
-       
+
         expect(res.statusCode).toEqual(200);
-        // Verificar que la respuesta tenga un array con las ciudades esperadas
         expect(res.body.data).toEqual(
-            expect.arrayContaining(
-                guests.map(guest =>({
-                    Cod : guest.Cod,
-                    Name: guest.Name,
-                    LastName: guest.LastName,
-                    Document: guest.Document,
-                    Gender: guest.Gender,
-                    PhoneNumber: guest.PhoneNumber,
-                    Email: guest.Email,
-                    Address: guest.Address,
-                    DocumentType:{
-                        Id: guest.DocumentType.Id,
-                        Name: guest.DocumentType.Name
-                    },
-                    City: {
-                        Id: hotel.City.Id,
-                        Name: hotel.City.Name
-                    }
-                }))
-            )
+            {
+                Id: guest.Id,
+                Name: guest.Name,
+                LastName: guest.LastName,
+                Document: guest.Document,
+                IdDocumentType: guest.IdDocumentType,
+                DateBirth: guest.DateBirth.toISOString(),
+                Gender: guest.Gender,
+                PhoneNumber: guest.PhoneNumber,
+                Email: guest.Email,
+                DocumentType: {
+                    Id: guest.DocumentType.Id,
+                    Name: guest.DocumentType.Name
+                }
+            }
         );
     });
-});
 
+    it('returns a 404 if the guest does not exist', async () => {
+
+        const response = await request(app).get('/api/guest/by-doc/');
+
+        expect(response.status).toBe(404);
+    });
+});

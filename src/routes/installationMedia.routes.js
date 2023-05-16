@@ -3,14 +3,8 @@ import { methods as installationMediaController } from "./../controllers/install
 
 const router = Router();
 
-router.post("/", installationMediaController.postInstallationMedia);
 router.get(
    "/by+-+id+-+installation/:Id",
-   installationMediaController.getAsyncInstallationMediaByIdInstallation
-);
-
-router.get(
-   "/menu/:Id",
    installationMediaController.getAsyncInstallationMediaByIdInstallation
 );
 
