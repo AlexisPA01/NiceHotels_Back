@@ -218,7 +218,7 @@ describe('postAsynRoom', () => {
     it('should create a new room in the database', async () => {
         const mockRoom = {
             CodHotel: 1,
-            Name: 'Test room post',
+            Name: 'Test room post'+ Math.floor(Math.random() * 10000),
             Description: 'Test description room post',
             CostNight: 120,
         };

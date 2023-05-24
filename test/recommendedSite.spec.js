@@ -359,7 +359,7 @@ describe('postAsynRecommendedsite', () => {
     it('should create a new recommendedSite in the database', async () => {
         const mockRecommendedSite = {
             CodHotel: 1,
-            Name: 'Test recommendedSite post',
+            Name: 'Test recommendedSite post'+ Math.floor(Math.random() * 10000),
             Description: 'Test description recommendedSite post',
             Address: 'address recommendedSite post',
             Ubication: 'ubication recommendedSite post',

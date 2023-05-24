@@ -325,7 +325,7 @@ describe('postAsynInstallation', () => {
     it('should create a new installation in the database', async () => {
         const mockInstallation = {
             CodHotel: 1,
-            Name: 'Test Installation post',
+            Name: 'Test Installation post' + Math.floor(Math.random() * 10000),
             Description: 'Test description post',
             Schedule: 'lunes a viernes post',
             DressCode: 'vestido post',
