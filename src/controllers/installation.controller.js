@@ -59,30 +59,23 @@ const postInstallation = async (req,res) => {
         { res.status(400).json(new response("Bad request. Please fill all fields.",400,null)); }
         else
         {
-            let installation = await installationService.getAsyncInstallationByCodHotelName(CodHotel,Name);
-            if(!installation)
+            let installationCheck = await installationService.postAsyncInstallation(
+                {
+                    Name,
+                    CodHotel,
+                    Description,
+                    Schedule,
+                    DressCode
+                }
+            );
+            if(installationCheck === 'Duplicated')
             {
-                let i = await installationService.postAsyncInstallation(
-                    {
-                        Name,
-                        CodHotel,
-                        Description,
-                        Schedule,
-                        DressCode
-                    }
-                );
-
-                await installationServiceMedia.postAsyncInstallationMedia({
-                    IdInstallation:i.Id,
-                    Name:"placeholder installation media",
-                    URL:"https://www.eltiempo.com/files/image_640_428/uploads/2022/11/11/636ec9b036dfd.png",
-                    FileType:"png",
-                })
-                
-                res.json(new response("OK Result",200,"Record added."));
+                res.status(401).json(new response("Duplicate record",401,null));
             }
             else
-            { res.status(401).json(new response("Duplicate record",401,null)); }
+            { 
+                res.json(new response("OK Result",200,"Record added."));
+            }
         }
     }catch(error)
     {
