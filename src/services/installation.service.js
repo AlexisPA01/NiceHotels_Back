@@ -4,6 +4,9 @@ import { City } from "../models/City";
 import { Hotel } from "../models/Hotel";
 import { InstallationMedia } from "../models/InstallationMedia";
 
+import { methods as installationServiceMedia } from "./installationMedia.service";
+
+
 const getAsyncInstallations = async () => 
 {
     return await Installation.findAll(
@@ -132,16 +135,31 @@ const getAsyncInstallationByCodHotelName = async (codHotel, name) =>
 
 const postAsyncInstallation = async (installation) => 
 {
-    return await Installation.create(
-        {
-            CodHotel: installation.CodHotel,
-            Name: installation.Name,
-            Description: installation.Description,
-            Schedule: installation.Schedule,
-            DressCode: installation.DressCode
-        }  
-    )
-    
+
+    let installationCheck = await getAsyncInstallationByCodHotelName(installation.CodHotel,installation.Name);
+
+    if(!installationCheck){
+        let i = await Installation.create(
+            {
+                CodHotel: installation.CodHotel,
+                Name: installation.Name,
+                Description: installation.Description,
+                Schedule: installation.Schedule,
+                DressCode: installation.DressCode
+            }  
+        )
+
+        await installationServiceMedia.postAsyncInstallationMedia({
+            IdInstallation:i.Id,
+            Name:"placeholder installation media",
+            URL:"https://www.eltiempo.com/files/image_640_428/uploads/2022/11/11/636ec9b036dfd.png",
+            FileType:"png",
+        })
+
+        return i;
+    }else{
+        return 'Duplicated';
+    }
 }
 
 const updateAsyncInstallation = async (installation) => 
