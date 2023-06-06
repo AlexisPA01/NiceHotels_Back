@@ -56,28 +56,22 @@ const postRecommendedSite = async (req,res) => {
         { res.status(400).json(new response("Bad request. Please fill all fields.",400,null)); }
         else
         {
-            var recommendedSite = await recommendedSiteService.getAsyncRecommendedSiteByCodHotelName(CodHotel,Name);
-            if(!recommendedSite)
+            let  recommendedSiteCheck = await recommendedSiteService.postAsyncRecommendedSite(
+                {
+                    CodHotel,
+                    Name,
+                    Description,
+                    Address,
+                    IdCity,
+                    Ubication
+                }
+            );
+            if(recommendedSiteCheck === 'Duplicated')
             {
-                let site = await recommendedSiteService.postAsyncRecommendedSite(
-                    {
-                        CodHotel,
-                        Name,
-                        Description,
-                        Address,
-                        IdCity,
-                        Ubication
-                    }
-                );
-
-                await recommendedSiteMediaService.postAsyncRecommendedSiteMedia({
-                    IdRecommendedSite: site.Id,
-                    Name:"placeholder recommended site media",
-                    FileType:"png",
-                    URL:"https://www.infobae.com/new-resizer/dbcnD_OL_e2ND2vT9T_GyAa7IpA=/1200x900/filters:format(webp):quality(85)//arc-anglerfish-arc2-prod-infobae.s3.amazonaws.com/public/L2W3PEXXGVAAPFDVDWCHAC73EM.jpg"
-                 })
+                res.status(401).json(new response("Duplicate record", 401, null));
+            }else{ 
                 res.json(new response("OK Result", 200, "Record added."));
-            }else{ res.status(400).json(new response("Duplicate record",400,null)); }
+            }
         }
     }catch(error)
     {

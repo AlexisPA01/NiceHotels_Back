@@ -38,30 +38,22 @@ const postRoom = async (req, res) => {
          CostNight,
       } = req.body;
 
-      if ( Name === undefined || Description === undefined || CodHotel === undefined || CostNight === undefined)
-      { res.status(400).json({message: "Bad request. Please fill all fields.",}); } 
+      if (Name === undefined || Description === undefined || CodHotel === undefined || CostNight === undefined) { res.status(400).json({ message: "Bad request. Please fill all fields.", }); }
       else {
-         let room = await roomService.getAsyncRoomByCodHotelName(CodHotel,Name);
-         if (!room) {
-            let roomCreated = await roomService.postAsyncRoom(
-               {
-                  Name,
-                  CodHotel,
-                  Description,
-                  CostNight,
-               }
-            );
+         let roomCheck = await roomService.postAsyncRoom(
+            {
+               Name,
+               CodHotel,
+               Description,
+               CostNight,
+            }
+         );
 
-            await roomMediaService.postAsyncRoomMedia({
-               CodRoom: roomCreated.Cod,
-               Name:"placeholder room media",
-               FileType:"png",
-               URL:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/habitacion-alquilar-1563544275.jpg"
-            })
-
-            res.json(new response("OK Result",200,"Record added."));
-         } else {
-            res.status(400).json(new response("Duplicate record", 400, null));
+         if (roomCheck === 'Duplicated') {
+            res.status(401).json(new response("Duplicate record", 401, null));
+         }
+         else {
+            res.json(new response("OK Result", 200, "Record added."));
          }
       }
    } catch (error) {
@@ -79,13 +71,12 @@ const updateRoom = async (req, res) => {
       CostNight
    } = req.body;
    try {
-      if ( Name === undefined || CodHotel === undefined || Description === undefined || CostNight === undefined) 
-      { res.status(400).json({ message: "Bad request. Please fill all fields.", });} 
+      if (Name === undefined || CodHotel === undefined || Description === undefined || CostNight === undefined) { res.status(400).json({ message: "Bad request. Please fill all fields.", }); }
       else {
          let room = await roomService.getAsyncRoom(Cod);
          if (room) {
             //---No ingresa float a la base de datos
-            await roomService.updateAsyncRoom({ 
+            await roomService.updateAsyncRoom({
                Cod,
                Name,
                Description,
@@ -93,8 +84,8 @@ const updateRoom = async (req, res) => {
                CodHotel
             });
             res.json(new response("OK Result", 200, "Record updated"));
-         } 
-         else { res.status(404).json(new response("Record not found",404,null));}
+         }
+         else { res.status(404).json(new response("Record not found", 404, null)); }
       }
    } catch (error) {
       res.status(500);

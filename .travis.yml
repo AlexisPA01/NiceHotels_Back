@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "16.9.1"
+script:
+  - npm run test -- city.spec.js
+  - npm run cover
+notifications:
+  email:
+    recipients:
+      - alexispatinoagudelo@gmail.com
+    on_success: always
+    on_failure: always

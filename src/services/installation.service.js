@@ -6,7 +6,6 @@ import { InstallationMedia } from "../models/InstallationMedia";
 
 import { methods as installationServiceMedia } from "./installationMedia.service";
 
-
 const getAsyncInstallations = async () => 
 {
     return await Installation.findAll(

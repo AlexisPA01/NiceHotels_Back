@@ -1,6 +1,9 @@
 import { sequelize } from "../database/database";
 import { DataTypes } from "sequelize";
 
+import { Guest } from "./Guest";
+import { Room } from "./Room";
+
 export const Reservation = sequelize.define('Reservation', {
     Num: {
         type: DataTypes.INTEGER,
@@ -27,7 +30,29 @@ export const Reservation = sequelize.define('Reservation', {
     },
     SubTotal: {
         type: DataTypes.FLOAT
-    },Total: {
+    }, Total: {
         type: DataTypes.FLOAT
-    }
+    },
+    IdRoom: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Room',
+            key: 'Cod'
+        }
+    },
+    IdGuest: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Guest',
+            key: 'Id'
+        }
+    },
+});
+
+Reservation.belongsTo(Room, {
+    foreignKey: 'IdRoom'
+});
+
+Reservation.belongsTo(Guest, {
+    foreignKey: 'IdGuest'
 });

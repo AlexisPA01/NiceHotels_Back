@@ -12,6 +12,7 @@ import productRoutes from "./routes/product.routes";
 import roomNumberRoutes from "./routes/roomNumber.routes";
 import guestRoutes from "./routes/guest.routes";
 import recommendedSiteRoutes from "./routes/recommendedSite.routes";
+import reservationRoutes from "./routes/reservation.routes";
 
 const cors = require("cors");
 const app = express();
@@ -35,5 +36,6 @@ app.use("/api/room-number", roomNumberRoutes);
 app.use("/api/recommended-site", recommendedSiteRoutes);
 app.use("/api/installation-media", installationMediaRoutes);
 app.use("/api/guest", guestRoutes);
+app.use("/api/reservation", reservationRoutes);
 
 export default app;

@@ -20,10 +20,12 @@ const options = {
           },
         },
       },
-    apis: ["src/routes/installation.routes.js","src/routes/hotel.routes.js"]
-    // apis: ['src/routes/city.routes.js','/routes/hotel.routes.js','/routes/room.routes.js',
-    // './installation.routes.js','./src/routes/installationMedia.routes.js','/routes/product.routes.js',
-    // '/routes/roomNumber.routes.js','/routes/guest.routes.js','/routes/recommendedSite.routes.js']
+    apis: [
+      "src/routes/installation.routes.js",
+      "src/routes/hotel.routes.js",
+      "src/routes/room.routes.js",
+      "src/routes/recommendedSite.routes.js"
+    ]
 }
 
 const swaggerSpec = swaggerJSDoc(options);

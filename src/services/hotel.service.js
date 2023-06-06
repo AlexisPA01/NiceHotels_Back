@@ -2,6 +2,8 @@ import { Hotel } from "../models/Hotel";
 import { City } from "../models/City";
 import { HotelMedia } from "../models/HotelMedia";
 
+import { methods as hotelMediaService } from "./hotelMedia.service";
+
 const getAsyncHotels = async () => {
    return await Hotel.findAll({
       attributes: ["Cod", "Name", "Description", "Ubication", "Address"],
@@ -32,14 +34,45 @@ const getAsyncHotel = async (Cod) => {
    });
 };
 
+const getAsyncHotelByName = async (Name) => {
+   return await Hotel.findOne({
+      where: {
+         Name
+      }
+   })
+}
+
 const postAsyncHotel = async (hotel) => {
-   return await Hotel.create({
-      Name: hotel.Name,
-      Description: hotel.Description,
-      IdCity: hotel.IdCity,
-      Ubication: hotel.Ubication,
-      Address: hotel.Address,
-   });
+
+   let hotelCheck = await getAsyncHotelByName(hotel.Name);
+
+   if(!hotelCheck){
+      let h = await Hotel.create({
+         Name: hotel.Name,
+         Description: hotel.Description,
+         IdCity: hotel.IdCity,
+         Ubication: hotel.Ubication,
+         Address: hotel.Address,
+      });
+
+      await hotelMediaService.postAsyncHotelMedia({
+         CodHotel: h.Cod,
+         Name: "Banner",
+         FileType: "png",
+         URL: "https://prod-be-palace-brand.s3.amazonaws.com/playa_del_carmen_resort_7769c7222e.jpg",
+      })
+
+      await hotelMediaService.postAsyncHotelMedia({
+         CodHotel: h.Cod,
+         Name: "Logo",
+         FileType: "png",
+         URL: "https://i.pinimg.com/originals/de/f7/b6/def7b694904830d5804ee5975b69e9ed.png",
+      })
+
+      return h;
+   }else{
+      return 'Duplicated';
+   }   
 };
 
 const updateAsyncHotel = async (hotel) => {
