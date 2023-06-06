@@ -10,7 +10,7 @@ Este repositorio contiene el código fuente para un backend para reservas de hot
 
 ## Tecnologías utilizadas
 
-- Node.js
+- Node.js (16.9.1)
 - Express.js
 - MySQL
 
@@ -19,6 +19,7 @@ Este repositorio contiene el código fuente para un backend para reservas de hot
 - Clona este repositorio en tu máquina local.
 - Instala las dependencias utilizando el comando `npm install`.
 - Tener el archivo `.env` con los credenciales y tener una copia de la base de datos.
+- Las credenciales del archivo .env son: HOST = localhost, DATABASE = nicehotels, USER = root, PASSWORD = mysql
 - Iniciar la aplicación utilizando el comando `npm run dev`
 
 ## Integrantes
