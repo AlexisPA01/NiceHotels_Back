@@ -5,6 +5,8 @@ import { Op } from "sequelize";
 import { RoomNumber } from "../models/RoomNumber";
 import { RoomMedia } from "../models/RoomMedia";
 
+import { methods as roomMediaService } from "./roomMedia.service";
+
 const getAsyncRoom = async (Cod) => {
    return await Room.findByPk(Cod, {
       attributes: ["Cod", "Name", "Description", "CostNight"],
@@ -80,12 +82,26 @@ const getAsyncRoomByCodHotelName = async (codHotel, name) => {
 };
 
 const postAsyncRoom = async (room) => {
-   return await Room.create({
-      CodHotel: room.CodHotel,
-      Name: room.Name,
-      Description: room.Description,
-      CostNight: room.CostNight,
-   });
+
+   let roomCheck = await getAsyncRoomByCodHotelName(room.CodHotel, room.Name);
+
+   if(!roomCheck){
+      let r = await Room.create({
+         CodHotel: room.CodHotel,
+         Name: room.Name,
+         Description: room.Description,
+         CostNight: room.CostNight,
+      });
+
+      await roomMediaService.postAsyncRoomMedia({
+         CodRoom: r.Cod,
+         Name:"placeholder room media",
+         FileType:"png",
+         URL:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/habitacion-alquilar-1563544275.jpg"
+      })
+   }else{
+      return 'Duplicated';
+   }
 };
 
 const updateAsyncRoom = async (room) => {

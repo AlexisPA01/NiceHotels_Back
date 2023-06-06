@@ -1,6 +1,6 @@
 import response from "./../entities/response";
 import { methods as hotelService } from "./../services/hotel.service";
-import { methods as hotelMediaService  } from "./../services/hotelMedia.service";
+import { methods as hotelMediaService } from "./../services/hotelMedia.service";
 
 const getAsyncHotels = async (req, res) => {
    try {
@@ -34,12 +34,11 @@ const postAsyncHotel = async (req, res) => {
       const { Name, Description, IdCity, Ubication, Address } = req.body;
 
       if (Name === undefined || IdCity === undefined || Address === undefined) {
-
          res.status(400).json(
             new response("Bad request. Please fill all fields.", 400, null)
          );
       } else {
-         let hotel = await hotelService.postAsyncHotel({
+         let hotelCheck = await hotelService.postAsyncHotel({
             Name,
             Description,
             IdCity,
@@ -47,13 +46,12 @@ const postAsyncHotel = async (req, res) => {
             Address,
          });
 
-         await hotelMediaService.postAsyncHotelMedia({
-            CodHotel:hotel.Cod,
-            Name:"placeholder hotel media",
-            FileType:"png",
-            URL:"https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg",
-         })
-         res.json(new response("OK Result", 200, "Record added."));
+         if (hotelCheck === 'Duplicated') {
+            res.status(401).json(new response("Duplicate record", 401, null));
+         }
+         else {
+            res.json(new response("OK Result", 200, "Record added."));
+         }
       }
    } catch (error) {
       res.status(500);
@@ -83,7 +81,7 @@ const udpateAsyncHotel = async (req, res) => {
          } else {
             var h = await hotelService.getAsyncHotel(Cod);
             if (h) {
-               
+
                await hotelService.updateAsyncHotel({
                   Cod,
                   Name,

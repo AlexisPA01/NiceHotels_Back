@@ -5,6 +5,8 @@ import { Hotel } from "../src/models/Hotel";
 import { City } from "../src/models/City";
 import { InstallationMedia } from '../src/models/InstallationMedia';
 
+import crypto from "crypto";
+
 describe('getAsyncInstallations', () => {
     it('should return an array of installations with the correct fields and relationships', async () => {
 
@@ -288,36 +290,36 @@ describe('updateAsyncInstallation', () => {
             Schedule: 'lunes a viernes jest asasas',
             DressCode: 'vestido asas',
         };
-    
+
         const response = await request(app)
-        .put('/api/installation/1')
-        .send(mock);
-    
+            .put('/api/installation/1')
+            .send(mock);
+
         expect(response.status).toBe(400);
-      });
+    });
 
     it('returns a 500 error if there is a error', async () => {
         const updatedInstallation = {
             Id: 1,
-            CodHotel:3,
+            CodHotel: 3,
             Name: 'Test Installation  jest asasa',
             Description: 'Test description jest  asasa',
             Schedule: 'lunes a viernes jest asasas',
             DressCode: 'vestido asas',
         };
-    
+
         const mock = jest.spyOn(Installation, 'update').mockImplementation(() => {
-          throw new Error('Intentional error');
+            throw new Error('Intentional error');
         });
-    
+
         const response = await request(app)
             .put(`/api/installation/${updatedInstallation.Id}`)
             .send(updatedInstallation);
-    
+
         expect(response.status).toBe(500);
-    
+
         mock.mockRestore();
-      });
+    });
 });
 
 describe('postAsynInstallation', () => {
@@ -325,7 +327,7 @@ describe('postAsynInstallation', () => {
     it('should create a new installation in the database', async () => {
         const mockInstallation = {
             CodHotel: 1,
-            Name: 'Test Installation post' + Math.floor(Math.random() * 10000),
+            Name: 'Test Installation post ' + crypto.randomUUID(),
             Description: 'Test description post',
             Schedule: 'lunes a viernes post',
             DressCode: 'vestido post',
@@ -347,13 +349,29 @@ describe('postAsynInstallation', () => {
             Schedule: 'lunes a viernes post',
             DressCode: 'vestido post',
         };
-    
+
         const response = await request(app)
-        .post('/api/installation')
-        .send(mockInstallation);
-    
+            .post('/api/installation')
+            .send(mockInstallation);
+
         expect(response.status).toBe(400);
-      });
+    });
+
+    it('returns a 401 error if there is duplicated record', async () => {
+        const mockInstallation = {
+            CodHotel: 1,
+            Name: "Restaurante Sea Blue",
+            Description: 'Test description post 401',
+            Schedule: 'lunes a viernes post 401',
+            DressCode: 'vestido post 401',
+        };
+
+        const response = await request(app)
+            .post('/api/installation')
+            .send(mockInstallation);
+
+        expect(response.status).toBe(401);
+    });
 
     it('returns a 500 error if there is a error', async () => {
         const mockInstallation = {

@@ -5,6 +5,8 @@ import { Hotel } from "../src/models/Hotel";
 import { City } from "../src/models/City";
 import { RecommendedSiteMedia } from "../src/models/RecommendedSiteMedia";
 
+import crypto from "crypto";
+
 describe('getAsyncRecommendedSites', () => {
     it('should return an array of RecommendedSites with the correct fields and relationships', async () => {
 
@@ -359,7 +361,7 @@ describe('postAsynRecommendedsite', () => {
     it('should create a new recommendedSite in the database', async () => {
         const mockRecommendedSite = {
             CodHotel: 1,
-            Name: 'Test recommendedSite post'+ Math.floor(Math.random() * 10000),
+            Name: 'Test recommendedSite post '+ +crypto.randomUUID(),
             Description: 'Test description recommendedSite post',
             Address: 'address recommendedSite post',
             Ubication: 'ubication recommendedSite post',
@@ -388,6 +390,23 @@ describe('postAsynRecommendedsite', () => {
             .send(mockRecommendedSite);
 
         expect(response.status).toBe(400);
+    });
+
+    it('returns a 401 error if there is duplicated record', async () => {
+
+        const mockRecommendedSite = {
+            CodHotel:3,
+            Name: 'Centro Historico',
+            Description: 'Test recommendedSite description after',
+            Address: 'address recommendedSite',
+            Ubication: 'ubication recommendedSite'
+        };
+
+        const response = await request(app)
+            .post('/api/recommended-site')
+            .send(mockRecommendedSite);
+
+        expect(response.status).toBe(401);
     });
 
     it('returns a 500 error if there is a error', async () => {

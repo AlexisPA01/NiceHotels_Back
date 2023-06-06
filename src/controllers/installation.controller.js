@@ -1,5 +1,4 @@
 import { methods as installationService } from "./../services/installation.service";
-import { methods as installationServiceMedia } from "./../services/installationMedia.service";
 
 import response from "./../entities/response";
 

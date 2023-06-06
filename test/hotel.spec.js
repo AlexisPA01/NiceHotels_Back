@@ -4,6 +4,8 @@ import { Hotel } from "../src/models/Hotel";
 import { City } from "../src/models/City";
 import { HotelMedia } from "../src/models/HotelMedia";
 
+import crypto from "crypto";
+
 describe('getAsyncHotels', () => {
   it('should return all hotels with their attributes and medias', async () => {
     const hotels = await Hotel.findAll({
@@ -232,7 +234,7 @@ describe('updateAsyncHotel', () => {
 describe('postAsyncHotel', () => {
   it('should create a new hotel in the database', async () => {
     const mockHotel = {
-      Name: 'Hotel Test',
+      Name: 'Hotel Test '+crypto.randomUUID(),
       Description: 'Descripción del hotel test',
       IdCity: 1,
       Ubication: 'Ubicación del hotel test',
@@ -262,6 +264,24 @@ describe('postAsyncHotel', () => {
     .send(mockHotel);
 
     expect(response.status).toBe(400);
+
+  });
+
+  it('returns a 401 error if there is duplicated record', async () => {
+
+    const mockHotel = {
+      Name: "Catalonia Santo Domingo",
+      Description: 'Descripción del hotel test',
+      IdCity: 1,
+      Ubication: 'Ubicación del hotel test',
+      Address: 'Dirección del hotel test',
+    };
+
+    const response = await request(app)
+    .post('/api/hotel')
+    .send(mockHotel);
+
+    expect(response.status).toBe(401);
 
   });
 

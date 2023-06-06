@@ -6,6 +6,8 @@ import { City } from "../src/models/City";
 import { RoomMedia } from "../src/models/RoomMedia";
 import { RoomNumber } from "../src/models/RoomNumber";
 
+import crypto from "crypto";
+
 describe("getAsyncRoom", () => {
     it("should return an room with the specified Id", async () => {
 
@@ -63,26 +65,26 @@ describe("getAsyncRoom", () => {
     it('returns a 404 if the room does not exist', async () => {
 
         const response = await request(app).get('/api/room/2');
-    
+
         expect(response.body).toEqual({
-          data: null,
-          message: "Record not found",
-          status: 404
+            data: null,
+            message: "Record not found",
+            status: 404
         })
-      });
+    });
 
     it('returns a 500 error if there is a error', async () => {
 
         const mockCityFindAll = jest.spyOn(Room, 'findByPk').mockImplementation(() => {
-          throw new Error('Intentional error');
+            throw new Error('Intentional error');
         });
-    
+
         const response = await request(app).get('/api/room/1');
-    
+
         expect(response.status).toBe(500);
-    
+
         mockCityFindAll.mockRestore();
-      });
+    });
 });
 
 describe("getAsyncRoomByCodHotel", () => {
@@ -146,15 +148,15 @@ describe("getAsyncRoomByCodHotel", () => {
     it('returns a 500 error if there is a error', async () => {
 
         const mockCityFindAll = jest.spyOn(Room, 'findAll').mockImplementation(() => {
-          throw new Error('Intentional error');
+            throw new Error('Intentional error');
         });
-    
+
         const response = await request(app).get('/api/room/hotel-room/1');
-    
+
         expect(response.status).toBe(500);
-    
+
         mockCityFindAll.mockRestore();
-      });
+    });
 });
 
 describe('updateAsyncRoom', () => {
@@ -218,7 +220,7 @@ describe('postAsynRoom', () => {
     it('should create a new room in the database', async () => {
         const mockRoom = {
             CodHotel: 1,
-            Name: 'Test room post'+ Math.floor(Math.random() * 10000),
+            Name: 'Test room post ' + crypto.randomUUID(),
             Description: 'Test description room post',
             CostNight: 120,
         };
@@ -230,6 +232,35 @@ describe('postAsynRoom', () => {
         expect(result.body.data).toBe("Record added.");
         expect(result.body.message).toBe("OK Result");
         expect(result.body.status).toBe(200);
+    });
+
+    it('returns a 400 error if there is missing fields', async () => {
+        const mockRoom = {
+            CodHotel: 1,
+            Description: 'Test description room post',
+            CostNight: 120,
+        };
+
+        const response = await request(app)
+            .post('/api/room')
+            .send(mockRoom);
+
+        expect(response.status).toBe(400);
+    });
+
+    it('returns a 401 error if there is a duplicated record', async () => {
+        const mockRoom = {
+            CodHotel: 1,
+            Name: "Ocean View",
+            Description: 'Test description room post 401',
+            CostNight: 120,
+        };
+
+        const response = await request(app)
+            .post('/api/room')
+            .send(mockRoom);
+
+        expect(response.status).toBe(401);
     });
 });
 
